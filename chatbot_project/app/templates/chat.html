@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Chatbot</title>
+    <script>
+        // Function to get the CSRF token from the document's cookies
+        function getCsrfToken() {
+            let csrfToken = null;
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith('csrftoken=')) {
+                    csrfToken = cookie.substring('csrftoken='.length);
+                    break;
+                }
+            }
+            return csrfToken;
+        }
+
+        async function askQuestion() {
+            const question = document.getElementById("question").value;
+            const responseElement = document.getElementById("response");
+
+            const csrfToken = getCsrfToken();  // Get CSRF token
+
+            const response = await fetch("/app/chatbot/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken,  // Add CSRF token here
+                },
+                body: `question=${encodeURIComponent(question)}`,
+            });
+
+            const data = await response.json();
+            responseElement.innerText = data.response;
+        }
+    </script>
+</head>
+<body>
+    <h1>Health Chatbot</h1>
+    <input type="text" id="question" placeholder="Ask a question">
+    <button onclick="askQuestion()">Submit</button>
+    <p>Response: <span id="response"></span></p>
+</body>
+</html>

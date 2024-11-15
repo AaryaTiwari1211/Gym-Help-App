@@ -1,0 +1,6 @@
+chatbot_project/venv/
+chatbot_project/.env/
+
+gymHelpMajor/node_modules/
+gymHelpMajor/.env/
+gymHelpMajor/.env.local/
