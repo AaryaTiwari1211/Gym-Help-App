@@ -10,6 +10,29 @@ function ChatBot() {
 
     const chatboxRef = useRef(null); // Reference for the chatbox container
 
+    const formatMessage = (text) => {
+        return text.split('\n').map((line, index) => {
+            if (line.includes('**')) {
+                const parts = line.split('**');
+                return (
+                    <p key={index} className="formatted-paragraph">
+                        {parts.map((part, i) =>
+                            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+                        )}
+                    </p>
+                );
+            }
+            else if (line.startsWith('*')) {
+                return (
+                    <li key={index} className="formatted-list-item">
+                        {line.substring(1).trim()}
+                    </li>
+                );
+            }
+            return <p key={index} className="formatted-paragraph">{line}</p>;
+        });
+    };
+
     const handleSend = async () => {
         if (input.trim()) {
             setMessages([...messages, { sender: 'user', text: input }]);
@@ -45,7 +68,7 @@ function ChatBot() {
                         key={index}
                         className={`message ${msg.sender === 'user' ? 'user' : 'bot'}`}
                     >
-                        {msg.text}
+                        {msg.sender === 'bot' ? formatMessage(msg.text) : <p>{msg.text}</p>}
                     </div>
                 ))}
             </div>
